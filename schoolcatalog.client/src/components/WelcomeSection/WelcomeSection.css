@@ -1,0 +1,110 @@
+.welcome-section {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(28, 200, 138, 0.4);
+  text-align: center;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Fade in + scale animation */
+  opacity: 0;
+  transform: scale(0.95);
+  animation: appearScale 0.8s ease forwards;
+}
+
+.welcome-section h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeSlideUp 1s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.welcome-section p {
+  font-size: 1.3rem;
+  line-height: 1.5;
+  margin-bottom: 45px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlideDown 1s ease forwards;
+  animation-delay: 0.5s;
+}
+
+.btn-welcome {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 14px 32px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.15rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards;
+  animation-delay: 0.8s;
+}
+
+.btn-welcome:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(28, 200, 138, 0.6);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-elev {
+  background: #1cc88a;
+  box-shadow: 0 4px 20px rgba(28, 200, 138, 0.5);
+}
+
+.btn-elev:hover {
+  box-shadow: 0 8px 30px rgba(28, 200, 138, 0.85);
+}
+
+.btn-profesor {
+  background: #4e73df;
+  box-shadow: 0 4px 20px rgba(78, 115, 223, 0.5);
+}
+
+.btn-profesor:hover {
+  box-shadow: 0 8px 30px rgba(78, 115, 223, 0.85);
+}
+
+
+@keyframes appearScale {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

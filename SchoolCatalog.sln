@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "schoolcatalog.client", "schoolcatalog.client\schoolcatalog.client.esproj", "{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolCatalog.Server", "SchoolCatalog.Server\SchoolCatalog.Server.csproj", "{517A7709-C56A-4A74-9249-B49461956220}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAFDD2AD-57B5-6D4F-067C-355B7F024B4E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{517A7709-C56A-4A74-9249-B49461956220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{517A7709-C56A-4A74-9249-B49461956220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{517A7709-C56A-4A74-9249-B49461956220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{517A7709-C56A-4A74-9249-B49461956220}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F228682-B533-49CD-B053-43694EBE1750}
+	EndGlobalSection
+EndGlobal
