@@ -11,9 +11,10 @@ const Header=()=>{
             <ul className="nav-list">
                 <li><Link to='/'>Acasa</Link></li>
                 <li><Link to='/login?role=profesor'>Profesor</Link></li>
-                <li><Link to='/login?role=elev'>Elev</Link></li>
                 <li><Link to='/despre'>Despre noi</Link></li>
                 <li><Link to="/contact">Contact</Link></li>
+                <li><Link to='/login'>Autentificare</Link></li>
+
             </ul>
         </nav>
         </header>

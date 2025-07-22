@@ -61,6 +61,7 @@ BenchmarkDotNet.Artifacts/
 # Configuratii personale 
 appsettings.Development.json
 appsettings.Local.json
+appsettings.json
 secrets.json
 # .NET Core
 project.lock.json

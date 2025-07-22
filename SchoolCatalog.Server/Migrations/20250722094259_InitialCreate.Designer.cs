@@ -12,7 +12,7 @@ using SchoolCatalog.Server.Data;
 namespace SchoolCatalog.Server.Migrations
 {
     [DbContext(typeof(SchoolCatalogContext))]
-    [Migration("20250717110927_InitialCreate")]
+    [Migration("20250722094259_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

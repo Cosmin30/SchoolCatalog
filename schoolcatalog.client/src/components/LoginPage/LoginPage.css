@@ -1,0 +1,82 @@
+
+.login-page {
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(102, 126, 234, 0.5);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  color: white;
+  box-sizing: border-box;
+}
+
+.login-page h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.role-selection {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.role-selection button {
+  flex: 1;
+  padding: 0.8rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #764ba2;
+  background: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255 255 255 / 0.5);
+}
+
+.role-selection button:hover, 
+.role-selection button.active {
+  background: #5a3cae;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(90, 60, 174, 0.6);
+}
+
+.back-button {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #eee;
+  background: transparent;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.back-button:hover {
+  background: white;
+  color: #5a3cae;
+}
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #0b3d91;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.toggle-btn:hover {
+  color: #06326c;
+}
