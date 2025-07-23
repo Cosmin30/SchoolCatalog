@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LoginForm from '../LoginForm/LoginForm';
+import { useAuth } from '../../context/AuthContext';  
 import './LoginPage.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const queryParams = new URLSea
 
   const [role, setRole] = useState(null);
 
@@ -22,9 +23,9 @@ const LoginPage = () => {
     navigate(`/login?role=${selectedRole}`);
   };
 
-  const handleLoginSuccess = (role) => {
-    console.log(`Logged in as ${role}`);
-    navigate('/dashboard');
+  const handleLoginSuccess = (user) => {
+    login(user);          
+    navigate('/dashboard');  
   };
 
   return (

@@ -1,19 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import './WelcomeSection.css';
+
 const WelcomeSection = () => {
-  const navigate= useNavigate();
-  const handleLogin=(role)=>{
-    navigate(`/login?role=${role}`)
-  }
   return (
     <section className="welcome-section">
-      <h1>Catalog școlar</h1>
-      <p>Bun venit în catalogul online de note  </p>
-      <div className="btn-welcome"> 
-      <button className='btn-profesor' onClick={()=>handleLogin('profesor')}> Loghează-te ca profesor  </button>
-      <button className='btn-elev'onClick={()=> handleLogin('elev')}> Loghează-te ca elev </button>
-      </div>
+      <h1>Bun venit în catalogul online de note</h1>
+      <p>
+        Acesta este spațiul unde elevii și profesorii pot accesa și administra informațiile școlare într-un mod simplu și eficient.
+      </p>
+      <p>
+        Vei putea să îți verifici notele, temele și multe alte funcționalități gândite să te ajute în parcursul educațional.
+      </p>
+      <p>
+        Autentifică-te și începe să explorezi toate avantajele platformei noastre!
+      </p>
     </section>
   );
 };
