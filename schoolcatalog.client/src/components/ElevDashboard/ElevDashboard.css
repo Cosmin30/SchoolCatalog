@@ -16,25 +16,6 @@
   padding-bottom: 0.5rem;
 }
 
-.elev-dashboard ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.elev-dashboard li {
-  background-color: #ffffff;
-  margin-bottom: 0.8rem;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
-}
-
-.elev-dashboard li:hover {
-  transform: translateY(-2px);
-  background-color: #f0f8ff;
-}
-
 .section {
   margin-bottom: 2rem;
 }
@@ -45,6 +26,93 @@
   color: #34495e;
 }
 
+/* Materii și note */
+.materii-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.materie-row {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  flex-wrap: wrap;
+}
+
+.materie-row:hover {
+  transform: translateY(-2px);
+  background-color: #f0f8ff;
+}
+
+.materie-nume {
+  font-weight: 600;
+  color: #2c3e50;
+  width: 160px;
+  min-width: 120px;
+  font-size: 1.1rem;
+}
+
+.note-badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-left: 1rem;
+  flex-grow: 1;
+}
+
+.note-badge {
+  background-color: #3498db;
+  color: #fff;
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.media-materie {
+  font-weight: 600;
+  color: #27ae60;
+  margin-left: auto;
+  font-size: 1rem;
+}
+
+/* Media generală */
+.media-generala {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  background-color: #e8f6f3;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Logout button */
+.logout-button {
+  margin-top: 2rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .elev-dashboard {
     padding: 1.2rem;
@@ -54,7 +122,17 @@
     font-size: 1.4rem;
   }
 
-  .elev-dashboard li {
-    padding: 1rem;
+  .materie-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .materie-nume {
+    margin-bottom: 0.5rem;
+  }
+
+  .media-materie {
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
 }

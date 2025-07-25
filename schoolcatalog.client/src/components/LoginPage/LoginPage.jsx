@@ -7,8 +7,8 @@ import './LoginPage.css';
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSea
-
+  const queryParams = new URLSearchParams(location.search);
+  const { login } = useAuth(); 
   const [role, setRole] = useState(null);
 
   useEffect(() => {
