@@ -4,44 +4,63 @@ import './ElevDashboard.css';
 
 const ElevDashboard = () => {
   const navigate = useNavigate();
-
   const [user, setUser] = useState(null);
   const [materii, setMaterii] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const dateFictive = [
-    { nume: 'Matematică', note: [9, 10, 8] },
-    { nume: 'Română', note: [7, 8] },
-    { nume: 'Istorie', note: [10] },
-    { nume: 'Informatica', note: [9, 10, 10, 9] },
-  ];
+useEffect(() => {
+  const storedUserStr = localStorage.getItem('user');
+  const token = localStorage.getItem('token');
 
-  useEffect(() => {
-    const storedUserStr = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+  if (!storedUserStr || !token) {
+    alert('Trebuie să fii autentificat!');
+    navigate('/login');
+    return;
+  }
 
-    if (!storedUserStr || !token) {
-      alert('Trebuie să fii autentificat!');
-      navigate('/login');
-      return;
+  const storedUser = JSON.parse(storedUserStr);
+  setUser(storedUser);
+
+   fetch(`https://localhost:7286/api/elev/${storedUser.idElev}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
     }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('Nu s-au putut prelua datele');
+      return res.json();
+    })
+    .then(data => {
+      // Adaugă numele complet în user
+      setUser({
+        ...storedUser,
+        nume: data.numeElev,
+        prenume: data.prenumeElev
+      });
 
-    const storedUser = JSON.parse(storedUserStr);
+      const materiiMap = {};
 
-    if (!storedUser.rol || storedUser.rol.toLowerCase() !== 'elev') {
-      alert('Acces restricționat doar pentru elevi.');
-      navigate('/login');
-      return;
-    }
+      data.note.forEach(n => {
+        if (!materiiMap[n.materie.numeMaterie]) {
+          materiiMap[n.materie.numeMaterie] = [];
+        }
+        materiiMap[n.materie.numeMaterie].push(n.valoare);
+      });
 
-    setUser(storedUser);
+      const materiiArray = Object.keys(materiiMap).map(m => ({
+        nume: m,
+        note: materiiMap[m]
+      }));
 
-    // Simulare încărcare date
-    setTimeout(() => {
-      setMaterii(dateFictive);
+      setMaterii(materiiArray);
       setLoading(false);
-    }, 500);
-  }, [navigate]);
+    })
+    .catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+}, [navigate]);
+
 
   const calculeazaMediaMaterie = (note) => {
     if (!note.length) return '-';
@@ -50,20 +69,17 @@ const ElevDashboard = () => {
   };
 
   const calculeazaMediaGenerala = () => {
-  if (!materii.length) return '-';
-
-  const sumaMediiRotunjite = materii.reduce((acc, m) => {
-    if (!m.note.length) return acc;
-    const sumaNote = m.note.reduce((a, n) => a + n, 0);
-    const mediaRotunjita = Math.round(sumaNote / m.note.length);
-    return acc + mediaRotunjita;
-  }, 0);
-
-  const nrMateriiCuNote = materii.filter(m => m.note.length > 0).length;
-  if (nrMateriiCuNote === 0) return '-';
-
-  return (sumaMediiRotunjite / nrMateriiCuNote).toFixed(2);
-};
+    if (!materii.length) return '-';
+    const sumaMedii = materii.reduce((acc, m) => {
+      if (!m.note.length) return acc;
+      const sumaNote = m.note.reduce((a, n) => a + n, 0);
+      const mediaRotunjita = Math.round(sumaNote / m.note.length);
+      return acc + mediaRotunjita;
+    }, 0);
+    const nrMateriiCuNote = materii.filter(m => m.note.length > 0).length;
+    if (nrMateriiCuNote === 0) return '-';
+    return (sumaMedii / nrMateriiCuNote).toFixed(2);
+  };
 
   const handleLogout = () => {
     localStorage.clear();
@@ -75,7 +91,7 @@ const ElevDashboard = () => {
 
   return (
     <div className="elev-dashboard">
-      <h2>👨‍🎓 Bun venit, {user.email}</h2>
+      <h2>👨‍🎓 Bun venit, {user.nume} {user.prenume}</h2>
       <p><strong>Rol:</strong> {user.rol}</p>
 
       <section className="overview">

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolCatalog.Server.Model
 {
@@ -19,8 +20,8 @@ namespace SchoolCatalog.Server.Model
         [Required]
         [DataType(DataType.Date)]
         public DateTime DataNasterii { get; set; }
-        public ICollection<Materie>? Materii { get; set; } 
-        public ICollection<Clasa>? Clase { get; set; }
+        public ICollection<Materie> Materii { get; set; } = new List<Materie>();
+        public ICollection<Clasa> Clase { get; set; } = new List<Clasa>();
 
     }
 }

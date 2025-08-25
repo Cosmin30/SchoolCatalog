@@ -20,10 +20,10 @@ namespace SchoolCatalog.Server.Model
         public ICollection<Elev>? Elevi { get; set; }
         [ForeignKey(nameof(Orar))]
         public int? IdOrar { get; set; }
-        public Orar? Orar { get; set; }
-        public ICollection<Materie>? Materii { get; set; }
-        public ICollection<Profesor>? Profesori { get; set; }
-        public ICollection<Tema>? Teme { get; set; } 
+        public Orar? Orar { get; set; } 
+        public ICollection<Materie> Materii { get; set; }= new List<Materie>(); 
+        public ICollection<Profesor> Profesori { get; set; }= new List<Profesor>();
+        public ICollection<Tema> Teme { get; set; } = new List<Tema>();
 
 
     }

@@ -27,6 +27,9 @@ const Header = () => {
           {user && (
             <>
               <li>Bun venit, {user.email}</li>
+              {user.rol.toLowerCase() === 'elev' && (
+              <li><Link to="/dashboard">Dashboard Elev</Link></li>
+              )}
               <li><button onClick={handleLogout} className="logout-btn">Ieșire</button></li>
             </>
           )}

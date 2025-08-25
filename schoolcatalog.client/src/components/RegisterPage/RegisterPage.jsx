@@ -7,16 +7,16 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const [role, setRole] = useState(null);
-
   const [form, setForm] = useState({
-    name: '',
+    nume: '',
+    prenume: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
 
   useEffect(() => {
-    if (location.state && location.state.role) {
+    if (location.state?.role) {
       setRole(location.state.role);
     }
   }, [location.state]);
@@ -25,42 +25,61 @@ const RegisterPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (form.password !== form.confirmPassword) {
-    alert("Parolele nu coincid!");
-    return;
-  }
-  try {
-    const response = await fetch('https://localhost:7286/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: form.email,
-        parola: form.password,
-        rol: role  // presupun că role vine din props sau context
-      }),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (!response.ok) {
-      const error = await response.text();
-      alert("Eroare înregistrare: " + error);
+    if (form.password !== form.confirmPassword) {
+      alert("Parolele nu coincid!");
       return;
     }
 
-    alert('Înregistrare reușită!');
-  } catch (err) {
-    alert('Eroare server: ' + err.message);
-  }
-};
+    try {
+      const response = await fetch('https://localhost:7286/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email,
+          parola: form.password,
+          rol: role,
+          nume: form.nume,
+          prenume: form.prenume
+        }),
+      });
 
+      if (!response.ok) {
+        const error = await response.text();
+        alert("Eroare înregistrare: " + error);
+        return;
+      }
+
+      alert('Înregistrare reușită!');
+      navigate('/login');
+    } catch (err) {
+      alert('Eroare server: ' + err.message);
+    }
+  };
 
   return (
     <div className="register-page">
       <h1>Înregistrare {role ? `- ${role.charAt(0).toUpperCase() + role.slice(1)}` : ''}</h1>
 
       <form className="register-form" onSubmit={handleSubmit}>
-        
+        <input
+          type="text"
+          name="nume"
+          placeholder="Nume"
+          value={form.nume}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="prenume"
+          placeholder="Prenume"
+          value={form.prenume}
+          onChange={handleChange}
+          required
+        />
         <input
           type="email"
           name="email"

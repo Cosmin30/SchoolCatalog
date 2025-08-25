@@ -6,7 +6,9 @@ using SchoolCatalog.Server.Dtos;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using SchoolCatalog.Server.Model;
 using ModelUser = SchoolCatalog.Server.Model.User;
+
 
 namespace SchoolCatalog.Server.Controllers
 {
@@ -22,40 +24,74 @@ namespace SchoolCatalog.Server.Controllers
             _context = context;
             _configuration = configuration;
         }
-        [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto newUser)
+[HttpPost("register")]
+public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto newUser)
+{
+    if (string.IsNullOrWhiteSpace(newUser.Email) ||
+        string.IsNullOrWhiteSpace(newUser.Parola) ||
+        string.IsNullOrWhiteSpace(newUser.Rol) ||
+        string.IsNullOrWhiteSpace(newUser.Nume) ||
+        string.IsNullOrWhiteSpace(newUser.Prenume))
+        return BadRequest("Email, parolă, rol, nume și prenume sunt obligatorii.");
+
+    var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
+    if (existingUser != null)
+        return BadRequest("Emailul există deja.");
+
+    int? elevId = null;
+    int? profesorId = null;
+
+    if (newUser.Rol.ToLower() == "elev")
+    {
+        var elev = new Elev
         {
-            if (string.IsNullOrWhiteSpace(newUser.Email) || string.IsNullOrWhiteSpace(newUser.Parola) || string.IsNullOrWhiteSpace(newUser.Rol))
-                return BadRequest("Email, parola și rolul sunt obligatorii.");
+            NumeElev = newUser.Nume,
+            PrenumeElev = newUser.Prenume,
+            DataNasterii = newUser.DataNasterii
+        };
+        _context.Elevi.Add(elev);
+        await _context.SaveChangesAsync();
+        elevId = elev.IdElev; // acum IdElev e generat
+    }
+    else if (newUser.Rol.ToLower() == "profesor")
+    {
+        var profesor = new Profesor
+        {
+            NumeProfesor = newUser.Nume,
+            PrenumeProfesor = newUser.Prenume,
+            EmailProfesor = newUser.Email,
+            DataNasterii = newUser.DataNasterii
+        };
+        _context.Profesori.Add(profesor);
+        await _context.SaveChangesAsync();
+        profesorId = profesor.IdProfesor; // IdProfesor generat
+    }
 
-            // Verificăm dacă emailul există deja
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
-            if (existingUser != null)
-                return BadRequest("Emailul există deja.");
+    var user = new User
+    {
+        Email = newUser.Email,
+        Parola = newUser.Parola,
+        Rol = newUser.Rol,
+        IdElev = elevId,
+        IdProfesor = profesorId
+    };
 
-            var user = new ModelUser
-            {
-                Email = newUser.Email,
-                Parola = newUser.Parola,
-                Rol = newUser.Rol,
-                IdElev = null,
-                IdProfesor = null
-            };
+    _context.Users.Add(user);
+    await _context.SaveChangesAsync();
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+    var userDto = new UserDto
+    {
+        IdUser = user.IdUser,
+        Email = user.Email,
+        Rol = user.Rol,
+        IdElev = user.IdElev,
+        IdProfesor = user.IdProfesor
+    };
 
-            var userDto = new UserDto
-            {
-                IdUser = user.IdUser,
-                Email = user.Email,
-                Rol = user.Rol,
-                IdElev = user.IdElev,
-                IdProfesor = user.IdProfesor
-            };
+    return CreatedAtAction(nameof(Login), new { email = user.Email }, userDto);
+}
 
-            return CreatedAtAction(nameof(Login), new { email = user.Email }, userDto);
-        }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<object>> Login([FromBody] LoginDto credentials)

@@ -17,7 +17,7 @@ namespace SchoolCatalog.Server.Model
         [ForeignKey(nameof(Clasa))]
         public int IdClasa { get; set; }
         public Clasa Clasa { get; set; } = null!;
-        public ICollection<FisierTema>? Fisiere { get; set; }
+        public ICollection<FisierTema> Fisiere { get; set; } =new List<FisierTema>();
 
 
 

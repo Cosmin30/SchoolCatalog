@@ -11,7 +11,7 @@ namespace SchoolCatalog.Server.Model
         [Required(ErrorMessage = "Clasa este obligatorie")]
         public int IdClasa { get; set; }
         public Clasa Clasa { get; set; } = null!;
-        public ICollection<OrarItem>? OrarItems { get; set; }  
+        public ICollection<OrarItem> OrarItems { get; set; } = new List<OrarItem>();  
 
     }
 }

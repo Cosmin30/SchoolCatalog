@@ -14,10 +14,10 @@ namespace SchoolCatalog.Server.Model
         [ForeignKey(nameof(Profesor))]
         public int? ProfesorId { get; set; }
         public Profesor? Profesor { get; set; } 
-        public ICollection<Nota>? Note { get; set; } 
-        public ICollection<Tema>? Teme { get; set; }
-        public ICollection<Clasa>? Clase { get; set; }
-        public ICollection<Media>? Medii { get; set; } 
+        public ICollection<Nota> Note { get; set; } = new List<Nota>(); 
+        public ICollection<Tema> Teme { get; set; } = new List<Tema>();
+        public ICollection<Clasa> Clase { get; set; } = new List<Clasa>();  
+        public ICollection<Media> Medii { get; set; } = new List<Media>();
 
 
 

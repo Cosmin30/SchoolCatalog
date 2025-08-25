@@ -7,7 +7,7 @@ namespace SchoolCatalog.Server.Model
     {
         
         [Key]
-        public int IdElev { get; set; }
+        public int IdElev { get; set; }     
         [Required(ErrorMessage = "Numele este obligatoriu"),
         MinLength(2,ErrorMessage ="Numele  elevului trebuie sa aiba minim 2 caractere"),
         MaxLength(50, ErrorMessage = "Numele elevului trebuie sa aiba maxim 50 de caractere"),
@@ -28,9 +28,9 @@ namespace SchoolCatalog.Server.Model
         public int? ClasaId { get; set; }
         public Clasa? Clasa { get; set; } 
 
-        public ICollection<Nota>? Note { get; set; } 
-        public ICollection<FisierTema>? FisiereTeme { get; set; }
-        public ICollection<Media>? Medii { get; set; }
+        public ICollection<Nota> Note { get; set; } = new List<Nota>(); 
+        public ICollection<FisierTema> FisiereTeme { get; set; } = new List<FisierTema>();
+        public ICollection<Media> Medii { get; set; } = new List<Media>();
 
     }
 }
