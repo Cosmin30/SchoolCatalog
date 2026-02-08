@@ -10,21 +10,33 @@ namespace SchoolCatalog.Server.Controller
     public class ElevController : ControllerBase
     {
         private readonly SchoolCatalogContext _context;
-        public ElevController(SchoolCatalogContext context)
+        private readonly ILogger<ElevController> _logger;
+        
+        public ElevController(SchoolCatalogContext context, ILogger<ElevController> logger)
         {
             _context = context;
+            _logger = logger;
         }
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Elev>>> GetElevi()
         {
-            var elevi = await _context.Elevi
-                .Include(e => e.Clasa)
-                .ToListAsync();
-            if (elevi == null || !elevi.Any())
+            try
             {
-                return NotFound("Nu s-au găsit elevi.");
+                var elevi = await _context.Elevi
+                    .Include(e => e.Clasa)
+                    .ToListAsync();
+                if (elevi == null || !elevi.Any())
+                {
+                    return NotFound("Nu s-au găsit elevi.");
+                }
+                return Ok(elevi);
             }
-            return Ok(elevi);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving elevi");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
         [HttpGet]
         [Route("{id:int}")]

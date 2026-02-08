@@ -11,7 +11,7 @@ const LoginForm = ({ role, onLogin }) => {
     setLoading(true);
 
     try {
-      const res = await fetch('https://localhost:7286/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -22,8 +22,8 @@ const LoginForm = ({ role, onLogin }) => {
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        alert('Eroare autentificare: ' + (errData?.message || 'Date incorecte'));
+        const errData = await res.json().catch(() => ({ message: 'Eroare de autentificare' }));
+        alert('Eroare: ' + (errData?.message || 'Date incorecte'));
         setLoading(false);
         return;
       }
@@ -39,12 +39,13 @@ const LoginForm = ({ role, onLogin }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
-      alert(`Bun venit, ${data.user.email}!`);
+      alert(`Bun venit, ${data.user.numeElev || data.user.numeProfesor || data.user.email}!`);
 
       if (onLogin) onLogin(data.user);
 
     } catch (error) {
       alert('Eroare server: ' + error.message);
+      console.error('Login error:', error);
     } finally {
       setLoading(false);
     }

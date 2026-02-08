@@ -32,11 +32,11 @@ public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto newUser
         string.IsNullOrWhiteSpace(newUser.Rol) ||
         string.IsNullOrWhiteSpace(newUser.Nume) ||
         string.IsNullOrWhiteSpace(newUser.Prenume))
-        return BadRequest("Email, parolă, rol, nume și prenume sunt obligatorii.");
+        return BadRequest(new { message = "Email, parolă, rol, nume și prenume sunt obligatorii." });
 
     var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
     if (existingUser != null)
-        return BadRequest("Emailul există deja.");
+        return BadRequest(new { message = "Emailul există deja." });
 
     int? elevId = null;
     int? profesorId = null;
@@ -51,7 +51,7 @@ public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto newUser
         };
         _context.Elevi.Add(elev);
         await _context.SaveChangesAsync();
-        elevId = elev.IdElev; // acum IdElev e generat
+        elevId = elev.IdElev;
     }
     else if (newUser.Rol.ToLower() == "profesor")
     {
@@ -64,13 +64,16 @@ public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto newUser
         };
         _context.Profesori.Add(profesor);
         await _context.SaveChangesAsync();
-        profesorId = profesor.IdProfesor; // IdProfesor generat
+        profesorId = profesor.IdProfesor;
     }
+
+    // Hash parola cu BCrypt
+    var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newUser.Parola);
 
     var user = new User
     {
         Email = newUser.Email,
-        Parola = newUser.Parola,
+        Parola = hashedPassword, // Salvăm hash-ul, nu parola în clar
         Rol = newUser.Rol,
         IdElev = elevId,
         IdProfesor = profesorId
@@ -97,25 +100,39 @@ public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto newUser
         public async Task<ActionResult<object>> Login([FromBody] LoginDto credentials)
         {
             if (string.IsNullOrWhiteSpace(credentials.Email) || string.IsNullOrWhiteSpace(credentials.Parola))
-                return BadRequest("Email și parola sunt obligatorii.");
+                return BadRequest(new { message = "Email și parola sunt obligatorii." });
 
+            // Găsește user-ul după email
             var user = await _context.Users
                 .Include(u => u.Elev)
+                    .ThenInclude(e => e.Clasa)
                 .Include(u => u.Profesor)
-                .FirstOrDefaultAsync(u => u.Email == credentials.Email && u.Parola == credentials.Parola);
+                .FirstOrDefaultAsync(u => u.Email == credentials.Email);
 
             if (user == null)
-                return Unauthorized("Email sau parolă greșite.");
+                return Unauthorized(new { message = "Email sau parolă greșite." });
+
+            // Verifică parola folosind BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(credentials.Parola, user.Parola))
+                return Unauthorized(new { message = "Email sau parolă greșite." });
 
             var token = GenerateJwtToken(user);
 
-            var userDto = new UserDto
+            // Construim user DTO cu toate informațiile necesare
+            var userDto = new
             {
-                IdUser = user.IdUser,
-                Email = user.Email,
-                Rol = user.Rol,
-                IdElev = user.IdElev,
-                IdProfesor = user.IdProfesor
+                idUser = user.IdUser,
+                email = user.Email,
+                rol = user.Rol,
+                idElev = user.IdElev,
+                idProfesor = user.IdProfesor,
+                // Informații despre elev (dacă există)
+                numeElev = user.Elev?.NumeElev,
+                prenumeElev = user.Elev?.PrenumeElev,
+                numeClasa = user.Elev?.Clasa?.NumeClasa,
+                // Informații despre profesor (dacă există)
+                numeProfesor = user.Profesor?.NumeProfesor,
+                prenumeProfesor = user.Profesor?.PrenumeProfesor
             };
 
             return Ok(new { token, user = userDto });

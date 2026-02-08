@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SchoolCatalog.Server.Data;
-using SchoolCatalog.Server.Model;
+using SchoolCatalog.Server.Dtos;
+using SchoolCatalog.Server.Services;
 
 namespace SchoolCatalog.Server.Controller
 {
@@ -9,39 +8,39 @@ namespace SchoolCatalog.Server.Controller
     [Route("api/[controller]")]
     public class TemaController : ControllerBase
     {
-        private readonly SchoolCatalogContext _context;
-        public TemaController(SchoolCatalogContext context)
+        private readonly ITemaService _temaService;
+
+        public TemaController(ITemaService temaService)
         {
-            _context = context;
+            _temaService = temaService;
         }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tema>>> GetTeme()
+        public async Task<ActionResult<IEnumerable<TemaDto>>> GetTeme()
         {
-            var teme = await _context.Teme
-                .Include(t => t.Materie)
-                .ToListAsync();
+            var teme = await _temaService.GetAllTemeAsync();
             if (teme == null || !teme.Any())
             {
                 return NotFound("Nu s-au găsit teme.");
             }
             return Ok(teme);
         }
+
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Tema>> GetTemaById(int id)
+        public async Task<ActionResult<TemaDto>> GetTemaById(int id)
         {
-            var tema = await _context.Teme
-                .Include(t => t.Materie)
-                .FirstOrDefaultAsync(t => t.IdTema == id);
+            var tema = await _temaService.GetTemaByIdAsync(id);
             if (tema == null)
             {
                 return NotFound($"Tema cu ID-ul {id} nu a fost găsită.");
             }
             return Ok(tema);
         }
+
         [HttpPost]
-        public async Task<ActionResult<Tema>> CreateTema([FromBody] Tema tema)
+        public async Task<ActionResult<TemaDto>> CreateTema([FromBody] CreateTemaDto createTemaDto)
         {
-            if (tema == null)
+            if (createTemaDto == null)
             {
                 return BadRequest("Tema nu poate fi null.");
             }
@@ -49,15 +48,16 @@ namespace SchoolCatalog.Server.Controller
             {
                 return BadRequest(ModelState);
             }
-            _context.Teme.Add(tema);
-            await _context.SaveChangesAsync();
+
+            var tema = await _temaService.CreateTemaAsync(createTemaDto);
             return CreatedAtAction(nameof(GetTemaById), new { id = tema.IdTema }, tema);
         }
+
         [HttpPost]
         [Route("CreateTeme")]
-        public async Task<ActionResult<IEnumerable<Tema>>> CreateTeme([FromBody] IEnumerable<Tema> teme)
+        public async Task<ActionResult<IEnumerable<TemaDto>>> CreateTeme([FromBody] IEnumerable<CreateTemaDto> createTemeDtos)
         {
-            if (teme == null || !teme.Any())
+            if (createTemeDtos == null || !createTemeDtos.Any())
             {
                 return BadRequest("Lista de teme nu poate fi null sau goală.");
             }
@@ -65,116 +65,107 @@ namespace SchoolCatalog.Server.Controller
             {
                 return BadRequest(ModelState);
             }
-            _context.Teme.AddRange(teme);
-            await _context.SaveChangesAsync();
+
+            var teme = await _temaService.CreateTemeAsync(createTemeDtos);
             return CreatedAtAction(nameof(GetTeme), teme);
         }
+
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Tema>> UpdateTema(int id, [FromBody] Tema tema)
+        public async Task<ActionResult<TemaDto>> UpdateTema(int id, [FromBody] UpdateTemaDto updateTemaDto)
         {
-            if (tema == null || tema.IdTema != id)
+            if (updateTemaDto == null)
             {
-                return BadRequest("Tema nu poate fi null sau ID-ul nu se potrivește.");
+                return BadRequest("Tema nu poate fi null.");
             }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var existingTema = await _context.Teme.FindAsync(id);
-            if (existingTema == null)
-            {
-                return NotFound($"Tema cu ID-ul {id} nu a fost găsită.");
-            }
-            existingTema.Descriere = tema.Descriere;
-            existingTema.TermenLimita = tema.TermenLimita;
-            existingTema.IdMaterie = tema.IdMaterie;
-            existingTema.IdClasa = tema.IdClasa;
-            _context.Teme.Update(existingTema);
-            await _context.SaveChangesAsync();
-            return Ok(existingTema);
-        }
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteTema(int id)
-        {
-            var tema = await _context.Teme.FindAsync(id);
+
+            var tema = await _temaService.UpdateTemaAsync(id, updateTemaDto);
             if (tema == null)
             {
                 return NotFound($"Tema cu ID-ul {id} nu a fost găsită.");
             }
-            _context.Teme.Remove(tema);
-            await _context.SaveChangesAsync();
+
+            return Ok(tema);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteTema(int id)
+        {
+            var deleted = await _temaService.DeleteTemaAsync(id);
+            if (!deleted)
+            {
+                return NotFound($"Tema cu ID-ul {id} nu a fost găsită.");
+            }
             return NoContent();
         }
+
         [HttpGet("Clasa/{idClasa:int}")]
-        public async Task<ActionResult<IEnumerable<Tema>>> GetTemeByClasa(int idClasa)
+        public async Task<ActionResult<IEnumerable<TemaDto>>> GetTemeByClasa(int idClasa)
         {
-            var teme = await _context.Teme
-                .Where(t => t.IdClasa == idClasa)
-                .Include(t => t.Materie)
-                .ToListAsync();
+            var teme = await _temaService.GetTemeByClasaAsync(idClasa);
             if (teme == null || !teme.Any())
             {
                 return NotFound($"Nu s-au găsit teme pentru clasa cu ID-ul {idClasa}.");
             }
             return Ok(teme);
         }
+
         [HttpGet("Materie/{idMaterie:int}")]
-        public async Task<ActionResult<IEnumerable<Tema>>> GetTemeByMaterie(int idMaterie)
+        public async Task<ActionResult<IEnumerable<TemaDto>>> GetTemeByMaterie(int idMaterie)
         {
-            var teme = await _context.Teme
-                .Where(t => t.IdMaterie == idMaterie)
-                .Include(t => t.Materie)
-                .ToListAsync();
+            var teme = await _temaService.GetTemeByMaterieAsync(idMaterie);
             if (teme == null || !teme.Any())
             {
                 return NotFound($"Nu s-au găsit teme pentru materia cu ID-ul {idMaterie}.");
             }
             return Ok(teme);
         }
+
         [HttpGet("Clasa/{idClasa:int}/Materie/{idMaterie:int}")]
-        public ActionResult<IEnumerable<Tema>> GetTemeByClasaAndMaterie(int idClasa, int idMaterie)
+        public async Task<ActionResult<IEnumerable<TemaDto>>> GetTemeByClasaAndMaterie(int idClasa, int idMaterie)
         {
-            var teme = _context.Teme
-                .Where(t => t.IdClasa == idClasa && t.IdMaterie == idMaterie)
-                .Include(t => t.Materie)
-                .ToList();
+            var teme = await _temaService.GetTemeByClasaAndMaterieAsync(idClasa, idMaterie);
             if (teme == null || !teme.Any())
             {
                 return NotFound($"Nu s-au găsit teme pentru clasa cu ID-ul {idClasa} și materia cu ID-ul {idMaterie}.");
             }
             return Ok(teme);
         }
+
         [HttpGet("Clasa/{idClasa:int}/Materie/{idMaterie:int}/TermenLimita")]
-        public async Task<ActionResult<IEnumerable<Tema>>> GetTemeByClasaAndMaterieAndTermenLimita(int idClasa, int idMaterie, DateTime termenLimita)
+        public async Task<ActionResult<IEnumerable<TemaDto>>> GetTemeByClasaAndMaterieAndTermenLimita(int idClasa, int idMaterie, DateTime termenLimita)
         {
-            var teme = await _context.Teme
-                .Where(t => t.IdClasa == idClasa && t.IdMaterie == idMaterie && t.TermenLimita.Date == termenLimita.Date)
-                .Include(t => t.Materie)
-                .ToListAsync();
+            var teme = await _temaService.GetTemeByClasaAndMaterieAndTermenLimitaAsync(idClasa, idMaterie, termenLimita);
             if (teme == null || !teme.Any())
             {
                 return NotFound($"Nu s-au găsit teme pentru clasa cu ID-ul {idClasa}, materia cu ID-ul {idMaterie} și termenul limită {termenLimita.ToShortDateString()}.");
             }
             return Ok(teme);
         }
+
         [HttpPatch]
         [Route("{id:int}/TermenLimita")]
-        public ActionResult<Tema> UpdateTermenLimita(int id, [FromBody] DateTime termenLimita)
+        public async Task<ActionResult<TemaDto>> UpdateTermenLimita(int id, [FromBody] UpdateTermenLimitaDto updateTermenLimitaDto)
         {
-            if (termenLimita == default)
+            if (updateTermenLimitaDto == null)
             {
-                return BadRequest("Termenul limită nu poate fi null sau invalid.");
+                return BadRequest("Termenul limită nu poate fi null.");
             }
-            var tema = _context.Teme.Find(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var tema = await _temaService.UpdateTermenLimitaAsync(id, updateTermenLimitaDto);
             if (tema == null)
             {
                 return NotFound($"Tema cu ID-ul {id} nu a fost găsită.");
             }
-            tema.TermenLimita = termenLimita;
-            _context.Teme.Update(tema);
-            _context.SaveChanges();
+
             return Ok(tema);
         }
-
-        }
     }
+}

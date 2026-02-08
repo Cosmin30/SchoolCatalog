@@ -46,6 +46,7 @@
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .nav-list li a:hover,
@@ -54,9 +55,33 @@
   transform: scale(1.05);
 }
 
+/* User info styling */
+.user-info {
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* Logout button specific styling */
 .logout-btn {
   font-weight: 600;
   color: white;
+  background: rgba(244, 67, 54, 0.8) !important;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(244, 67, 54, 1) !important;
+  transform: scale(1.05);
+}
+
+/* Active link styling */
+.nav-list li a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
@@ -69,5 +94,13 @@
   .nav-list {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .nav-list li a,
+  .nav-list li button,
+  .user-info {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.7rem;
   }
 }

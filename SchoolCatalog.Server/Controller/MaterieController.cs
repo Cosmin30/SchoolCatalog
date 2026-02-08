@@ -10,19 +10,30 @@ namespace SchoolCatalog.Server.Controller
     public class MaterieController : ControllerBase
     {
         private readonly SchoolCatalogContext _context;
-        public MaterieController(SchoolCatalogContext context)
+        private readonly ILogger<MaterieController> _logger;
+        
+        public MaterieController(SchoolCatalogContext context, ILogger<MaterieController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Materie>>> GetMaterii()
         {
-            var materii = await _context.Materii.Include(m => m.Profesor).ToListAsync();
-            if (!materii.Any())
-                return NotFound("Nu s-au găsit materii.");
+            try
+            {
+                var materii = await _context.Materii.Include(m => m.Profesor).ToListAsync();
+                if (!materii.Any())
+                    return NotFound("Nu s-au găsit materii.");
 
-            return Ok(materii);
+                return Ok(materii);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving materii");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("{id:int}")]

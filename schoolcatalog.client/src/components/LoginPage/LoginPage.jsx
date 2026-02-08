@@ -43,7 +43,7 @@ const LoginPage = () => {
         <>
           <LoginForm role={role} onLogin={handleLoginSuccess} />
           <p>
-            Nu ai cont?{' '}
+            Nu ai cont?{' '} 
             <button
               className="toggle-btn"
               onClick={() => navigate('/register', { state: { role } })}

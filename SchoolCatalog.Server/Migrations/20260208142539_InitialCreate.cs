@@ -27,20 +27,41 @@ namespace SchoolCatalog.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Profesori",
                 columns: table => new
                 {
-                    IdUser = table.Column<int>(type: "int", nullable: false)
+                    IdProfesor = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Parola = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdElev = table.Column<int>(type: "int", nullable: true),
-                    IdProfesor = table.Column<int>(type: "int", nullable: true)
+                    NumeProfesor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PrenumeProfesor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EmailProfesor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataNasterii = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.IdUser);
+                    table.PrimaryKey("PK_Profesori", x => x.IdProfesor);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Elevi",
+                columns: table => new
+                {
+                    IdElev = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NumeElev = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PrenumeElev = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DataNasterii = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClasaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Elevi", x => x.IdElev);
+                    table.ForeignKey(
+                        name: "FK_Elevi_Clase_ClasaId",
+                        column: x => x.ClasaId,
+                        principalTable: "Clase",
+                        principalColumn: "IdClasa",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,54 +82,6 @@ namespace SchoolCatalog.Server.Migrations
                         column: x => x.IdClasa,
                         principalTable: "Clase",
                         principalColumn: "IdClasa",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Elevi",
-                columns: table => new
-                {
-                    IdElev = table.Column<int>(type: "int", nullable: false),
-                    NumeElev = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PrenumeElev = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DataNasterii = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ClasaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Elevi", x => x.IdElev);
-                    table.ForeignKey(
-                        name: "FK_Elevi_Clase_ClasaId",
-                        column: x => x.ClasaId,
-                        principalTable: "Clase",
-                        principalColumn: "IdClasa",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Elevi_Users_IdElev",
-                        column: x => x.IdElev,
-                        principalTable: "Users",
-                        principalColumn: "IdUser",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Profesori",
-                columns: table => new
-                {
-                    IdProfesor = table.Column<int>(type: "int", nullable: false),
-                    NumeProfesor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PrenumeProfesor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EmailProfesor = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataNasterii = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Profesori", x => x.IdProfesor);
-                    table.ForeignKey(
-                        name: "FK_Profesori_Users_IdProfesor",
-                        column: x => x.IdProfesor,
-                        principalTable: "Users",
-                        principalColumn: "IdUser",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -154,6 +127,35 @@ namespace SchoolCatalog.Server.Migrations
                         principalTable: "Profesori",
                         principalColumn: "IdProfesor",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    IdUser = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Parola = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdElev = table.Column<int>(type: "int", nullable: true),
+                    IdProfesor = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.IdUser);
+                    table.ForeignKey(
+                        name: "FK_Users_Elevi_IdElev",
+                        column: x => x.IdElev,
+                        principalTable: "Elevi",
+                        principalColumn: "IdElev",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Users_Profesori_IdProfesor",
+                        column: x => x.IdProfesor,
+                        principalTable: "Profesori",
+                        principalColumn: "IdProfesor",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -409,6 +411,20 @@ namespace SchoolCatalog.Server.Migrations
                 name: "IX_Teme_IdMaterie",
                 table: "Teme",
                 column: "IdMaterie");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_IdElev",
+                table: "Users",
+                column: "IdElev",
+                unique: true,
+                filter: "[IdElev] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_IdProfesor",
+                table: "Users",
+                column: "IdProfesor",
+                unique: true,
+                filter: "[IdProfesor] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -433,13 +449,16 @@ namespace SchoolCatalog.Server.Migrations
                 name: "OrarItems");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "Teme");
 
             migrationBuilder.DropTable(
-                name: "Elevi");
+                name: "Orare");
 
             migrationBuilder.DropTable(
-                name: "Orare");
+                name: "Elevi");
 
             migrationBuilder.DropTable(
                 name: "Materii");
@@ -449,9 +468,6 @@ namespace SchoolCatalog.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Profesori");
-
-            migrationBuilder.DropTable(
-                name: "Users");
         }
     }
 }

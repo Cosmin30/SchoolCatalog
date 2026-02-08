@@ -21,7 +21,7 @@ useEffect(() => {
   const storedUser = JSON.parse(storedUserStr);
   setUser(storedUser);
 
-   fetch(`https://localhost:7286/api/elev/${storedUser.idElev}`, {
+   fetch(`http://localhost:5121/api/elev/${storedUser.idElev}`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }

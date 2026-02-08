@@ -1,32 +1,37 @@
-import { useEffect, useState } from 'react';
 import './App.css';
 import WelcomeSection from './components/WelcomeSection/WelcomeSection.jsx';
 import Despre from './components/Despre/Despre.jsx';
 import Contact from './components/Contact/Contact.jsx';
 import Header from './components/Header/Header.jsx';
 import Footer from './components/Footer/Footer.jsx';
-import { Route,Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import LoginPage from './components/LoginPage/LoginPage.jsx';
-import RegisterPage from './components/RegisterPage/RegisterPage'; 
+import RegisterPage from './components/RegisterPage/RegisterPage';
 import ElevDashboard from './components/ElevDashboard/ElevDashboard.jsx';
+import GestiuneNote from './components/GestiuneNote/GestiuneNote.jsx';
+import VizualizareNote from './components/VizualizareNote/VizualizareNote.jsx';
+
 function App() {
     return (
         <>
-        <div className='app-container'>
-        <Header/>
-        <main className='main-content'>
-        <Routes>
-        <Route path='/' element={<WelcomeSection/>}/>
-        <Route path='/login' element={<LoginPage/>}/>
-        <Route path='/register' element={<RegisterPage/>}/>
-        <Route path='despre' element={<Despre/>}/>
-        <Route path='contact' element={<Contact/>}/>
-        <Route path="/dashboard" element={<ElevDashboard />} />
-
-        </Routes>
-        </main>
-        <Footer/>
-        </div>
+            <div className='app-container'>
+                <Header />
+                <main className='main-content'>
+                    <Routes>
+                        <Route path='/' element={<WelcomeSection />} />
+                        <Route path='/login' element={<LoginPage />} />
+                        <Route path='/register' element={<RegisterPage />} />
+                        <Route path='despre' element={<Despre />} />
+                        <Route path='contact' element={<Contact />} />
+                        <Route path="/dashboard" element={<ElevDashboard />} />
+                        {/* Route pentru profesor - Gestiune Note */}
+                        <Route path="/profesor/note" element={<GestiuneNote />} />
+                        {/* Route pentru elev - Vizualizare Note */}
+                        <Route path="/elev/note" element={<VizualizareNote />} />
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
         </>
     );
 }

@@ -81,7 +81,10 @@ namespace SchoolCatalog.Server.Migrations
             modelBuilder.Entity("SchoolCatalog.Server.Model.Elev", b =>
                 {
                     b.Property<int>("IdElev")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdElev"));
 
                     b.Property<int?>("ClasaId")
                         .HasColumnType("int");
@@ -293,7 +296,10 @@ namespace SchoolCatalog.Server.Migrations
             modelBuilder.Entity("SchoolCatalog.Server.Model.Profesor", b =>
                 {
                     b.Property<int>("IdProfesor")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProfesor"));
 
                     b.Property<DateTime>("DataNasterii")
                         .HasColumnType("datetime2");
@@ -375,6 +381,14 @@ namespace SchoolCatalog.Server.Migrations
 
                     b.HasKey("IdUser");
 
+                    b.HasIndex("IdElev")
+                        .IsUnique()
+                        .HasFilter("[IdElev] IS NOT NULL");
+
+                    b.HasIndex("IdProfesor")
+                        .IsUnique()
+                        .HasFilter("[IdProfesor] IS NOT NULL");
+
                     b.ToTable("Users");
                 });
 
@@ -414,12 +428,6 @@ namespace SchoolCatalog.Server.Migrations
                         .WithMany("Elevi")
                         .HasForeignKey("ClasaId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SchoolCatalog.Server.Model.User", null)
-                        .WithOne("Elev")
-                        .HasForeignKey("SchoolCatalog.Server.Model.Elev", "IdElev")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Clasa");
                 });
@@ -529,15 +537,6 @@ namespace SchoolCatalog.Server.Migrations
                     b.Navigation("Profesor");
                 });
 
-            modelBuilder.Entity("SchoolCatalog.Server.Model.Profesor", b =>
-                {
-                    b.HasOne("SchoolCatalog.Server.Model.User", null)
-                        .WithOne("Profesor")
-                        .HasForeignKey("SchoolCatalog.Server.Model.Profesor", "IdProfesor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("SchoolCatalog.Server.Model.Tema", b =>
                 {
                     b.HasOne("SchoolCatalog.Server.Model.Clasa", "Clasa")
@@ -555,6 +554,23 @@ namespace SchoolCatalog.Server.Migrations
                     b.Navigation("Clasa");
 
                     b.Navigation("Materie");
+                });
+
+            modelBuilder.Entity("SchoolCatalog.Server.Model.User", b =>
+                {
+                    b.HasOne("SchoolCatalog.Server.Model.Elev", "Elev")
+                        .WithOne()
+                        .HasForeignKey("SchoolCatalog.Server.Model.User", "IdElev")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SchoolCatalog.Server.Model.Profesor", "Profesor")
+                        .WithOne()
+                        .HasForeignKey("SchoolCatalog.Server.Model.User", "IdProfesor")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Elev");
+
+                    b.Navigation("Profesor");
                 });
 
             modelBuilder.Entity("SchoolCatalog.Server.Model.Clasa", b =>
@@ -597,13 +613,6 @@ namespace SchoolCatalog.Server.Migrations
             modelBuilder.Entity("SchoolCatalog.Server.Model.Tema", b =>
                 {
                     b.Navigation("Fisiere");
-                });
-
-            modelBuilder.Entity("SchoolCatalog.Server.Model.User", b =>
-                {
-                    b.Navigation("Elev");
-
-                    b.Navigation("Profesor");
                 });
 #pragma warning restore 612, 618
         }

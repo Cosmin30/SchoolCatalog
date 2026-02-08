@@ -34,7 +34,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await fetch('https://localhost:7286/api/auth/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,8 +47,8 @@ const RegisterPage = () => {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        alert("Eroare înregistrare: " + error);
+        const error = await response.json().catch(() => ({ message: 'Eroare la înregistrare' }));
+        alert("Eroare: " + (error?.message || 'Nu s-a putut realiza înregistrarea'));
         return;
       }
 
@@ -56,6 +56,7 @@ const RegisterPage = () => {
       navigate('/login');
     } catch (err) {
       alert('Eroare server: ' + err.message);
+      console.error('Register error:', err);
     }
   };
 
